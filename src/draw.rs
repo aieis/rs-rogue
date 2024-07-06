@@ -25,6 +25,23 @@ impl Canvas {
             height
         }
     }
+
+    pub fn w(&self) -> i32 {
+        self.width as i32
+    }
+
+    pub fn h(&self) -> i32 {
+        self.height as i32
+    }
+
+    pub fn clear(&mut self) {
+        let clear_row = std::iter::repeat(" ").take(self.width).collect::<String>();
+        
+        for i in 0..self.height {
+            let idx = i * (self.width + 1);
+            self.data.replace_range(idx..idx+self.width, &clear_row);
+        }        
+    }
 }
 
 pub fn clear_background() {

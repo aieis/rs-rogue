@@ -5,17 +5,17 @@ pub struct World {
 
 pub struct Cube {
     pub position: Vec3,
-    pub length: usize
+    pub length: i32
 }
 
 pub struct Vec3 {
-    pub x: usize,
-    pub y: usize,
-    pub z: usize,
+    pub x: i32,
+    pub y: i32,
+    pub z: i32,
 }
 
 impl Vec3 {
-    pub fn new(x: usize, y: usize, z: usize) -> Vec3 {
+    pub fn new(x: i32, y: i32, z: i32) -> Vec3 {
         Self {x, y, z}
     }
 }
