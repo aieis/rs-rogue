@@ -80,12 +80,25 @@ fn main() {
                 height = height - (y + height - canvas.h() - 1);
             }
 
-            draw_rectangle(&mut canvas, width as usize, height as usize, x as usize, y as usize);
+            //draw_rectangle(&mut canvas, width as usize, height as usize, x as usize, y as usize);
         }
+
+        clear_background();
+        draw_quad(&mut canvas, [(2, 2), (10, 5), (20, 8), (10, 10)]);
+        // draw_line(&mut canvas, (2, 2), (2, 30));
+        // draw_line(&mut canvas, (2, 30), (20, 30));
+
+        // draw_line(&mut canvas, (22, 2), (30, 5));
+        // draw_line(&mut canvas, (30, 5), (42, 8));
+        // draw_line(&mut canvas, (30, 10), (42, 8));
+        // draw_line(&mut canvas, (22, 2), (30, 10));
+
+        //draw_triangle(&mut canvas, [(2, 2), (10, 5), (2, 20)]);
+        //draw_triangle(&mut canvas, [(12, 2), (20, 5), (22, 20)]);
 
         draw_text(&mut canvas, &ev, 0, 0);
 
-        clear_background();
+        
         swap_buffer(&canvas);
 
         let mut valid_ev = false;
