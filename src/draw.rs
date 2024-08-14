@@ -1,4 +1,4 @@
-use crate::Vec3;
+use crate::world::Vec3;
 
 pub struct Canvas {
     pub data: String,
@@ -6,12 +6,14 @@ pub struct Canvas {
     pub height: usize,
 }
 
+const FACT: usize = 5;
+
 pub fn norm(x: usize) -> usize {
-    (x*3 + 1)/2
+    (x*FACT + 1)/2
 }
 
 pub fn arcnorm(x: usize) -> usize {
-    (x*2 - 1)/3
+    (x*2 - 1)/FACT
 }
 
 impl Canvas {
@@ -91,7 +93,6 @@ pub fn draw_line(canvas: &mut Canvas, point1: (usize, usize), point2: (usize, us
         let y1 = y_f.ceil() as usize;
         let y2 = y_f.floor() as usize;
         let idx = y1 * (canvas.width + 1) + x;
-        println!("{idx} {y1} {x}");
         canvas.data.replace_range(idx..idx+1, "#");
         let idx = y2 * (canvas.width + 1) + x;
         canvas.data.replace_range(idx..idx+1, "#");        
@@ -132,8 +133,7 @@ pub fn draw_triangle(canvas: &mut Canvas, points: [(usize, usize); 3]) {
             mxy = *py;
         }
     }
-
-    println!("{mny} {mxy} {mnx} {mxx}");
+    
     for py in mny..=mxy {
         for px in mnx..=mxx {
             let p = Vec3::new(px as i32, py as i32, 0);
@@ -164,23 +164,8 @@ pub fn draw_quad(canvas: &mut Canvas, points: [(usize, usize); 4]) {
     let br = points[2];
     let bl = points[3];
 
-    println!("{:?}", points);
-
-    for y in tl.1..=bl.1 {
-        
-        let pc = (y  as f32 - tl.1 as f32) / (bl.1 as f32 - tl.1 as f32);
-
-        let x1 = ((bl.0 as f32 - tl.0 as f32) * pc + tl.0 as f32) as usize;
-        let p1 = (x1, y);
-
-        let y2 = ((br.1 as f32 - tr.1 as f32) * pc + tr.1 as f32) as usize;
-        let x2 = ((br.0 as f32 - tr.0 as f32) * pc + tr.0 as f32) as usize;
-        let p2 = (x2, y2);
-
-        println!("{pc}: ({x1}, {y}) => ({x2}, {y2})");
-
-        draw_line(canvas, p1, p2);
-    }
+    draw_triangle(canvas, [tl, tr, br]);
+    draw_triangle(canvas, [br, bl, tl]);
 }
 
 pub fn draw_rectangle(canvas: &mut Canvas, width: usize, height: usize, x: usize, y: usize) {

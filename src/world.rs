@@ -24,3 +24,24 @@ impl Vec3 {
         (v1.x - v0.x) * (p.y - v0.y) - (v1.y - v0.y)*(p.x - v0.x)
     }
 }
+
+#[derive(Clone)]
+pub struct Vec3f {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
+
+impl Vec3f {
+    pub fn new(x: f32, y: f32, z: f32) -> Vec3f {
+        Self {x, y, z}
+    }
+
+    pub fn add(&self, v: &Vec3f) -> Vec3f {
+        return Vec3f::new(self.x + v.x, self.y + v.y, self.z + v.z);
+    }
+
+    pub fn sub(&self, v: &Vec3f) -> Vec3f {
+        return Vec3f::new(self.x - v.x, self.y - v.y, self.z - v.z);
+    }    
+}

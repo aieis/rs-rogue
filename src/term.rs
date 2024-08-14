@@ -4,7 +4,6 @@ extern crate libc;
 
 use libc::{c_int,c_uint,c_uchar};
 use std::fs;
-use std::io;
 use std::os::unix::io::AsRawFd;
 
 
@@ -41,6 +40,7 @@ impl Termios {
     }
 
     /// Turn echo on
+    #[allow(dead_code)]
     pub fn echo_on(&mut self) -> () {
         self.c_lflag |= libc::ECHO;
         unsafe {
@@ -51,6 +51,7 @@ impl Termios {
     }
 
     /// Turn echo off
+    #[allow(dead_code)]
     pub fn echo_off(&mut self) -> () {
         self.c_lflag &= !(libc::ECHO | libc::ICANON);
         unsafe {
@@ -110,56 +111,3 @@ pub fn read_key() -> Option<char>{
         return  None;
     }
 }
-
-
-fn read_single_char(fd: i32) -> std::io::Result<Option<char>> {
-    // timeout of zero means that it will not block
-    let is_ready = poll_fd(fd, -1)?;
-    
-    if is_ready {
-        // if there is something to be read, take 1 byte from it
-        let mut buf: [u8; 1] = [0];
-
-        read_bytes(fd, &mut buf, 1)?;
-        Ok(Some(buf[0] as char))
-    } else {
-        //there is nothing to be read
-        Ok(None)
-    }
-}
-
-
-
-fn poll_fd(fd: i32, timeout: i32) -> std::io::Result<bool> {
-    let mut pollfd = libc::pollfd {
-        fd,
-        events: libc::POLLIN,
-        revents: 0,
-    };
-    let ret = unsafe { libc::poll(&mut pollfd as *mut _, 1, timeout) };
-    if ret < 0 {
-        Err(io::Error::last_os_error())
-    } else {
-        Ok(pollfd.revents & libc::POLLIN != 0)
-    }
-}
-
-fn read_bytes(fd: i32, buf: &mut [u8], count: u8) -> io::Result<u8> {
-    let read = unsafe { libc::read(fd, buf.as_mut_ptr() as *mut _, count as usize) };
-    if read < 0 {
-        Err(io::Error::last_os_error())
-    } else if read == 0 {
-        Err(io::Error::new(
-            io::ErrorKind::UnexpectedEof,
-            "Reached end of file",
-        ))
-    } else if buf[0] == b'\x03' {
-        Err(io::Error::new(
-            io::ErrorKind::Interrupted,
-            "read interrupted",
-        ))
-    } else {
-        Ok(read as u8)
-    }
-}
-
